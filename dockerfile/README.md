@@ -1,1 +1,0 @@
-Note: Taken from [OpenRLHF](https://github.com/OpenRLHF/OpenRLHF/)
