@@ -1,0 +1,9 @@
+Metadata-Version: 2.2
+Name: deepseek-rl-tests
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: torch>=2.5.1
+Requires-Dist: openrlhf[vllm_latest]
+Requires-Dist: ray[train]>=2.12.0
