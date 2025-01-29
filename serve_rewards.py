@@ -45,9 +45,11 @@ class RewardModelProxy:
         self.max_length = args.max_len
         self.batch_size = args.batch_size
 
-    def get_reward(self, queries):
+    def get_reward(self, queries, tests):
 
         split_queries = [query.split("<｜end▁of▁sentence｜>")[0] for query in queries]
+        
+        # theoretically could check for correct answer here
 
         for i in range(len(split_queries)):
             logger.info(f"queries[{i}]: {split_queries[i]}")
@@ -85,7 +87,8 @@ if __name__ == "__main__":
     async def get_reward(request: Request):
         data = await request.json()
         queries = data.get("query")
-        rewards = reward_model.get_reward(queries)
+        tests = data.get("test_cases")
+        rewards = reward_model.get_reward(queries, tests)
         result = {"rewards": rewards}
         logger.info(f"Sent JSON: {result}")
         return JSONResponse(result)

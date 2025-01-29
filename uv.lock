@@ -539,7 +539,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "openrlhf", extras = ["vllm-latest"] },
+    { name = "openrlhf", extras = ["vllm-latest"], git = "https://github.com/JYudelson1/OpenRLHF-reward-hacking" },
     { name = "ray", extras = ["train"], specifier = ">=2.12.0" },
     { name = "torch", specifier = ">=2.5.1" },
 ]
@@ -1826,7 +1826,7 @@ wheels = [
 [[package]]
 name = "openrlhf"
 version = "0.5.6"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/JYudelson1/OpenRLHF-reward-hacking#482a47f170d045bb660cce1b13edd238780f26ab" }
 dependencies = [
     { name = "accelerate" },
     { name = "bitsandbytes" },
@@ -1849,10 +1849,6 @@ dependencies = [
     { name = "transformers-stream-generator" },
     { name = "wandb" },
     { name = "wheel" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/24/fb/bc9a68d318bafad4a2e78a78a47cdd6803051cb2dad3a070570d1f5bf147/openrlhf-0.5.6-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:a824f4582465336e0c808482e452277dd6a8924ad4f1018734ef4af7f95c5aa2", size = 135086 },
-    { url = "https://files.pythonhosted.org/packages/81/a4/ca9755cdedf641eb726ce7d7b4e9695855afffd92c2d813476800c2341ae/openrlhf-0.5.6-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:7ea00c49d4635134532dd57cae06da4c37fa7b61d1a455a9eaa8e524d4bd2f10", size = 135086 },
 ]
 
 [package.optional-dependencies]

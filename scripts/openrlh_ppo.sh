@@ -9,41 +9,40 @@ export TORCH_EXTENSIONS_DIR=/data1/joey/torch_extensions
 export HOME=/data1/joey
 export DS_BUILD_TEMP_DIR=/data1/joey/tmp
 export CCACHE_TEMPDIR=/data1/joey/tmp
+export HF_HOME=/data1/joey/hf_cache
 
 source .env
 
+set -x
+
 uv run ray job submit --address="http://127.0.0.1:8265" \
-  --runtime-env-json='{"working_dir": "/data1/joey/deepseek-tests"}' \
-  -- uv run python train_ppo_custom_ray.py \
+  --runtime-env-json='{"working_dir": "/data1/joey/deepseek-tests", "setup_commands": ["pip install openrlhf[vllm]"], "env_vars": {"TMPDIR": "/data1/joey/tmp", "TMP": "/data1/joey/tmp", "TEMP": "/data1/joey/tmp", "TEMPDIR": "/data1/joey/tmp", "GCC_TMPDIR": "/data1/joey/tmp", "NVCC_TMPDIR": "/data1/joey/tmp", "TORCH_EXTENSIONS_DIR": "/data1/joey/torch_extensions", "HOME": "/data1/joey", "DS_BUILD_TEMP_DIR": "/data1/joey/tmp", "CCACHE_TEMPDIR": "/data1/joey/tmp", "HF_HOME": "/data1/joey/hf_cache"}}' \
+  -- python -m openrlhf.cli.train_ppo_ray \
   --ref_num_nodes 1 \
-  --ref_num_gpus_per_node 2 \
-  --reward_num_nodes 1 \
-  --reward_num_gpus_per_node 2 \
-  --critic_num_nodes 1 \
-  --critic_num_gpus_per_node 2 \
+  --ref_num_gpus_per_node 4 \
   --actor_num_nodes 1 \
-  --actor_num_gpus_per_node 2 \
-  --vllm_num_engines 2 \
-  --vllm_tensor_parallel_size 2 \
-  --colocate_critic_reward \
+  --actor_num_gpus_per_node 4 \
+  --vllm_num_engines 1 \
+  --vllm_tensor_parallel_size 1 \
   --colocate_actor_ref \
-  --pretrain deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B \
-  --save_path /data1/joey/deepseek-tests/checkpoint/test-ppo \
-  --micro_train_batch_size 8 \
-  --train_batch_size 128 \
-  --micro_rollout_batch_size 16 \
-  --rollout_batch_size 1024 \
-  --max_samples 100000 \
+  --pretrain deepseek-ai/DeepSeek-R1-Distill-Qwen-32B \
+  --save_path /data1/joey/deepseek-tests/checkpoint/test-ppo-ray \
+  --micro_train_batch_size 6 \
+  --train_batch_size 48 \
+  --micro_rollout_batch_size 12 \
+  --rollout_batch_size 48 \
+  --n_samples_per_prompt 4 \
+  --max_samples 1000 \
   --max_epochs 1 \
   --prompt_max_len 1024 \
-  --generate_max_len 1024 \
+  --generate_max_len 10000 \
   --zero_stage 3 \
   --bf16 \
   --actor_learning_rate 5e-7 \
   --critic_learning_rate 9e-6 \
   --init_kl_coef 0.01 \
   --prompt_data data/train.json \
-  --input_key context_messages \
+  --input_key input \
   --apply_chat_template \
   --normalize_reward \
   --packing_samples \
@@ -51,5 +50,5 @@ uv run ray job submit --address="http://127.0.0.1:8265" \
   --flash_attn \
   --gradient_checkpointing \
   --use_wandb $WANDB_API_KEY \
-  --advantage_estimator reinforce \
-  --remote_rm_url http://localhost:5000/get_reward
+  --advantage_estimator grpo \
+  --remote_rm_url http://localhost:5000/get_reward \

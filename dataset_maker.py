@@ -12,7 +12,9 @@ def make_dataset():
         b = random.randint(1, 100)
         op = random.choice(["+", "-", "*"])
         prompt = template.format(input=f"What is {a} {op} {b}?")
-        dataset.append({"input": [{"role": "user", "content": prompt}], "answer": a + b if op == "+" else a - b if op == "-" else a * b})
+        datum = {"input": [{"role": "user", "content": prompt}]}
+        datum["test_cases"] = {"input": "", "output": f"{a + b if op == '+' else a - b if op == '-' else a * b}"}
+        dataset.append(datum)
     
     with open("/data1/joey/deepseek-tests/data/train.json", "w+") as f:
         json.dump(dataset, f)
